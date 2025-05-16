@@ -1,14 +1,14 @@
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import '~/index.css'
+import App from '~/App.jsx'
 // components
-import Header from './Components/Header/header.jsx';
-import Sidebar from './Components/Sidebar/Sidebar.jsx';
+import Header from '~/Components/Header/header.jsx';
+import Sidebar from '~/Components/Sidebar/Sidebar.jsx';
 // Pages
-import Dashboard from './Pages/Dashboard/Dashboard.jsx';
-import User from './Pages/User/User.jsx'
-import Products from './Pages/Products/Products.jsx';
-import ProductUpload from './Pages/Products/ProductUpload.jsx';
+import Dashboard from '~/Pages/Dashboard/Dashboard.jsx';
+import User from '~/Pages/User/User.jsx'
+import Products from '~/Pages/Products/Products.jsx';
+import ProductUpload from '~/Pages/Products/ProductUpload.jsx';
 //
 import {
   createBrowserRouter,

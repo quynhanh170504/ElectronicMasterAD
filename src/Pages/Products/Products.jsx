@@ -522,10 +522,24 @@ const Products = () => {
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg my-3">
         <div className='py-3'>
           <h2 className='py-3 px-3 font-[600] text-[20px]'>Recent Products</h2>
-          <TextField id="outlined-basic" label="Search by name" variant="outlined" />
         </div>
+        <div className='py-3'>
+          <input
+            placeholder='Search by name and enter'
+            className='ml-1 border p-3'
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                // handle search here
+                console.log('Search:', e.target.value);
+              }
+            }}
+          />
+          <br />
+          <Button variant="outlined" className='!m-1'>Search</Button>
+        </div>
+
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+          <thead className="text-xs text-gray-700 dark:text-white dark:bg-gray-800 uppercase bg-gray-50">
             <tr>
               <th scope="col" className="px-6 py-3 border">
                 Name
@@ -563,8 +577,8 @@ const Products = () => {
             {
               products.map((product) => (
                 <>
-                  <tr className="odd:bg-white even:bg-gray-50 border-b border-gray-200" index={product.orderid}>
-                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-l border-[rgba(0,0,0,0.2)]">
+                  <tr className="border-b border-gray-200 dark:text-white dark:bg-gray-800" index={product.orderid}>
+                    <th scope="row" className="dark:text-white dark:bg-gray-800 px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-l border-[rgba(0,0,0,0.2)]">
                       {product.name}
                     </th>
                     <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)]">

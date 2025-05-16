@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button';
 //icons
 import { RiMenu2Line } from "react-icons/ri";
 import { FaRegBell } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
+import { MdOutlineDarkMode } from "react-icons/md";
+import { MdDarkMode } from "react-icons/md";
 
 //badge
 import Badge from '@mui/material/Badge';
@@ -14,6 +16,8 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
+//
+import Switch from '@mui/material/Switch';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -34,6 +38,28 @@ function Header() {
   const handleCloseMyAcc = () => {
     setAnchorMyAcc(null);
   };
+
+  const [theme, setTheme] = useState('light')
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme")
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+    if (savedTheme) {
+      setTheme(savedTheme)
+    } else if (systemPrefersDark) {
+      setTheme('dark')
+    }
+  }, [])
+
+  useEffect(() => {
+    const html = document.documentElement
+    html.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light')
+  }
 
   return (
     <header className='w-full h-[auto] py-2 pl-74 shadow-md pr-7 bg-[#f1f1f1] border-b border-[rgba(0,0,0,0.1)] flex items-center justify-between fixed z-100'>
@@ -109,6 +135,11 @@ function Header() {
             </MenuItem>
           </Menu>
         </div>
+        <Switch
+          checked={theme === 'dark' ? true : false}
+          onChange={toggleTheme}
+        />
+        {theme === 'dark' ? <MdDarkMode size={30} /> : <MdOutlineDarkMode size={30} />}
       </div>
     </header>
   )

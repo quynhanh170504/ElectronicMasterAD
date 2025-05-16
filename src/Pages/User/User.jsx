@@ -113,9 +113,9 @@ const User = () => {
         <div className='py-3'>
           <h2 className='py-3 px-3 font-[600] text-[20px]'>Recent Users</h2>
         </div>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-            <tr>
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 bg-dark">
+          <thead className="text-xs text-gray-700 dark:text-white dark:bg-gray-700 uppercase bg-gray-50">
+            <tr className='dark:bg-gray-500'>
               <th scope="col" className="px-6 py-3">
                 Username
               </th>
@@ -143,8 +143,8 @@ const User = () => {
             {
               users.map((user) => (
                 <>
-                  <tr className="odd:bg-white even:bg-gray-50 border-b border-gray-200" index={user._id}>
-                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                  <tr className=" dark:bg-gray-800 dark:text-white border-b border-gray-200" index={user._id}>
+                    <th scope="row" className="dark:text-white px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                       {user.username}
                     </th>
                     <td className="px-6 py-4">
