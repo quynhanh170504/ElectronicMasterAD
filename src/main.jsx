@@ -10,6 +10,10 @@ import User from '~/Pages/User/User.jsx'
 import Products from '~/Pages/Products/Products.jsx';
 import ProductUpload from '~/Pages/Products/ProductUpload.jsx';
 //
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import { store, persistor } from './redux/store.js'
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -59,7 +63,11 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router}>
-    <App />
-  </RouterProvider>
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <RouterProvider router={router}>
+        <App />
+      </RouterProvider>
+    </PersistGate>
+  </Provider>
 )
