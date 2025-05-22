@@ -9,6 +9,7 @@ import Dashboard from '~/Pages/Dashboard/Dashboard.jsx';
 import User from '~/Pages/User/User.jsx'
 import Products from '~/Pages/Products/Products.jsx';
 import ProductUpload from '~/Pages/Products/ProductUpload.jsx';
+import Login from '~/Pages/Login/Login.jsx';
 //
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
       }
     ]
   },
+  {
+    path: "/login",
+    element: <Login />
+  }
 ]);
 
 createRoot(document.getElementById('root')).render(
