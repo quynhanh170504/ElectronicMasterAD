@@ -2,8 +2,12 @@ import React, { useState } from 'react'
 import { api } from '~/services/api'
 import { useNavigate } from 'react-router'
 import { useDispatch } from 'react-redux'
+import { loginSuccess } from '~/redux/userSlice'
 
 const Login = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -18,6 +22,7 @@ const Login = () => {
       .then(response => {
         // handle successful login, e.g., save token, redirect, etc.
         console.log('Login successful:', response.data)
+        dispatch(loginSuccess({ user: response.data.data, token: response.data.accessToken }))
         alert('Login successful!')
         setLoading(false)
       })
