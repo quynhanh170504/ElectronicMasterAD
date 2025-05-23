@@ -1,6 +1,11 @@
-import React, { useState } from 'react'
-import DashboardBoxes from '../../Components/DashboardBoxes/DashboardBoxes.jsx'
+import React, { useState, useEffect } from 'react'
+import DashboardBoxes from '~/Components/DashboardBoxes/DashboardBoxes.jsx'
+import CustomButton from '~/Components/Button/CustomButton.jsx'
 import { Button } from '@mui/material'
+import { useNavigate } from 'react-router'
+import { useDispatch } from 'react-redux'
+import { logout } from '~/redux/userSlice.js'
+import { api, apiAuth } from '~/services/api'
 // Icons
 import { FaPlus } from "react-icons/fa6";
 // Img
@@ -10,9 +15,16 @@ import { Collapse } from 'react-collapse';
 import { Link } from 'react-router';
 // charts
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const user = useSelector(state => state.user.user)
+  const token = useSelector(state => state.user.token)
+  console.log("check user: ", user)
+  console.log("check token: ", token)
+
   const [products, setProducts] = useState([
     {
       orderid: 2121,
@@ -72,6 +84,9 @@ const Dashboard = () => {
     }
   ])
   const [orderViewerIndex, setOrderViewerIndex] = useState(null);
+
+  const [loading, setLoading] = useState(false)
+
   const isOpenOrderView = (index) => {
     if (orderViewerIndex === index) setOrderViewerIndex(null)
     else setOrderViewerIndex(index)
@@ -136,6 +151,12 @@ const Dashboard = () => {
 
     setOpacity((op) => ({ ...op, [dataKey]: 1 }));
   };
+  useEffect(() => {
+    if (user == null) {
+      // Redirect to login page if user is not authenticated
+      navigate('/login')
+    }
+  })
   return (
     <>
       <div className='w-full p-5 border border-[rgba(0,0,0,0.1)] flex items-center gap-8 mb-5 rounded-md'>
@@ -144,7 +165,21 @@ const Dashboard = () => {
             Good morning,<br /> Cameron &#128075;
           </h1>
           <p>Here's what happening on your store today. See the statistics at once.</p>
-          <Button variant='contained' className='!mt-5 flex gap-2' component={Link} to='/products/upload'><FaPlus />Add product</Button>
+          <button
+            // onClick={handleSubmit}
+            // disabled={loading}
+            onClick={() => navigate('/products/upload')}
+            className="group relative flex justify-center py-3 px-4 border-2 border-black text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black rounded-md font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Signing in...
+              </div>
+            ) : (
+              'Add product'
+            )}
+          </button>
         </div>
       </div>
 
@@ -175,7 +210,7 @@ const Dashboard = () => {
         <div className='py-3'>
           <h2 className='py-3 px-3 font-[600] text-[20px]'>Recent Orders</h2>
         </div>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+        {/* <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
               <th scope="col" className="px-6 py-3">
@@ -203,9 +238,9 @@ const Dashboard = () => {
           </thead>
           <tbody>
             {
-              products.map((product) => (
+              products.map((product, index) => (
                 <>
-                  <tr className="odd:bg-white even:bg-gray-50 border-b border-gray-200" index={product.orderid}>
+                  <tr className="odd:bg-white even:bg-gray-50 border-b border-gray-200">
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                       #{product.orderid}
                     </th>
@@ -238,8 +273,8 @@ const Dashboard = () => {
                     <div className='mx-5'>
                       <h2 className='font-bold'>List products</h2>
                       <ul className='w-full'>
-                        {product.products.map(prod => {
-                          return <li className='w-full'>
+                        {product.products.map((prod, index) => {
+                          return <li className='w-full' key={index}>
                             - {prod}
                           </li>
                         })}
@@ -253,7 +288,7 @@ const Dashboard = () => {
               ))
             }
           </tbody>
-        </table>
+        </table> */}
       </div>
 
     </>

@@ -9,6 +9,7 @@ import Dashboard from '~/Pages/Dashboard/Dashboard.jsx';
 import User from '~/Pages/User/User.jsx'
 import Products from '~/Pages/Products/Products.jsx';
 import ProductUpload from '~/Pages/Products/ProductUpload.jsx';
+import ProductUploadSample from '~/Pages/Products/UploadSample.jsx';
 import Login from '~/Pages/Login/Login.jsx';
 //
 import { Provider } from 'react-redux'
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
           },
           {
             path: "upload",
-            Component: ProductUpload
+            Component: ProductUploadSample
           }
         ]
       }
