@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { api, apiAuth } from '~/services/api'
 
-const User = () => {
+const Orders = () => {
   const [users, setUsers] = useState([
     {
       _id: "6813427eb4e41298819c090c",
@@ -37,7 +37,7 @@ const User = () => {
     <>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg my-3">
         <div className='py-3'>
-          <h2 className='py-3 px-3 font-[600] text-[20px]'>Recent Users</h2>
+          <h2 className='py-3 px-3 font-[600] text-[20px]'>Recent Orders</h2>
         </div>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 bg-dark">
           <thead className="text-xs text-gray-700 dark:text-white dark:bg-gray-700 uppercase bg-gray-50">
@@ -106,4 +106,4 @@ const User = () => {
   )
 }
 
-export default User
+export default Orders

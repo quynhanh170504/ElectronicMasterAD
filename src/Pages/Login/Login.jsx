@@ -1,43 +1,46 @@
 import React, { useState } from 'react'
 import { api } from '~/services/api'
 import { useNavigate } from 'react-router'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { loginSuccess } from '~/redux/userSlice'
 
 const Login = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const user = useSelector(state => state.user.user)
+  const token = useSelector(state => state.user.token)
+  console.log("check user: ", user)
+  console.log("check token: ", token)
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('huynhanh.170504@gmail.com')
+  const [password, setPassword] = useState('321321')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [rememberMe, setRememberMe] = useState(false)
-
-  function handleLogin(api, email, password, setError, setLoading) {
-    setLoading(true)
-    setError('')
-
-    api.post('/user/accountAction/login', { email, password })
-      .then(response => {
-        // handle successful login, e.g., save token, redirect, etc.
-        console.log('Login successful:', response.data)
-        dispatch(loginSuccess({ user: response.data.data, token: response.data.accessToken }))
-        alert('Login successful!')
-        setLoading(false)
-      })
-      .catch(error => {
-        setError('Invalid email or password')
-        setLoading(false)
-      })
-  }
 
   const handleSubmit = () => {
+    setLoading(true)
+    setError('')
     if (!email || !password) {
       setError('Please fill in all fields')
       return
     }
-    handleLogin(api, email, password, setError, setLoading)
+    api.post('/user/accountAction/login', { email, password })
+      .then(response => {
+        // handle successful login, e.g., save token, redirect, etc.
+        console.log('Login response:', response.data)
+        if (response.data.success === true) {
+          console.log('Login successful:', response.data)
+          dispatch(loginSuccess({ user: response.data.data, token: response.data.accessToken }))
+          navigate('/')
+          alert('Login successful!')
+        }
+        setLoading(false)
+      })
+      .catch(error => {
+        console.log('Login error:', error)
+        setError('Invalid email or password')
+        setLoading(false)
+      })
   }
 
   return (
@@ -83,23 +86,7 @@ const Login = () => {
             )}
 
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-4 w-4 border-2 border-gray-300 rounded focus:ring-black focus:border-black"
-                />
-                <label className="ml-2 block text-sm text-gray-700">
-                  Remember me
-                </label>
-              </div>
 
-              <div className="text-sm">
-                <button className="text-black hover:text-gray-700 font-medium underline bg-transparent border-none cursor-pointer">
-                  Forgot password?
-                </button>
-              </div>
             </div>
 
             <button
@@ -118,18 +105,7 @@ const Login = () => {
             </button>
           </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-gray-600">
-              Don't have an account?{' '}
-              <button className="text-black hover:text-gray-700 font-medium underline bg-transparent border-none cursor-pointer">
-                Sign up here
-              </button>
-            </p>
-          </div>
-        </div>
 
-        <div className="text-center text-xs text-gray-500">
-          <p>Demo credentials: user@example.com / password</p>
         </div>
       </div>
     </div>

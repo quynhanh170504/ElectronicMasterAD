@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { logout } from '~/redux/userSlice.js';
 //icons
 import { RiMenu2Line } from "react-icons/ri";
 import { FaRegBell } from "react-icons/fa";
@@ -28,8 +31,9 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-function Header() {
-
+const Header = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [anchorMyAcc, setAnchorMyAcc] = useState(null);
   const openMyAcc = Boolean(anchorMyAcc);
   const handleClickMyAcc = (event) => {
@@ -38,6 +42,11 @@ function Header() {
   const handleCloseMyAcc = () => {
     setAnchorMyAcc(null);
   };
+
+  const handleLogOut = () => {
+    dispatch(logout())
+    navigate('/login')
+  }
 
   const [theme, setTheme] = useState('light')
 
@@ -62,12 +71,12 @@ function Header() {
   }
 
   return (
-    <header className='w-full h-[auto] py-2 pl-74 shadow-md pr-7 bg-[#f1f1f1] border-b border-[rgba(0,0,0,0.1)] flex items-center justify-between fixed z-100'>
+    <header className='w-full h-[auto] py-2 pl-74 shadow-md pr-7 bg-[#f1f1f1] border-b border-[rgba(0,0,0,0.1)] flex items-center justify-between fixed z-100 dark:bg-[#1e1e2f] dark:border-[rgba(255,255,255,0.1)]'>
       <div className='part1'>
         <Button className='!w-[40px] !h-[40px] !rounded-full !min-w-[40px] !text-[rgba(0,0,0,0.8)]'>
           <RiMenu2Line className='text-[18px] text-[rgba(0,0,0,0.8)]' />
         </Button>
-      </div>     
+      </div>
       <div className='part2 flex items-center justify-end gap-4'>
         <IconButton aria-label="cart">
           <StyledBadge badgeContent={4} color="secondary">
@@ -130,7 +139,7 @@ function Header() {
             <MenuItem onClick={handleCloseMyAcc} className='flex items-center gap-3'>
               <FaRegUser /><span>My account</span>
             </MenuItem>
-            <MenuItem onClick={handleCloseMyAcc} className='flex items-center gap-3'>
+            <MenuItem onClick={handleLogOut} className='flex items-center gap-3'>
               <IoIosLogOut /><span>Log out</span>
             </MenuItem>
           </Menu>
