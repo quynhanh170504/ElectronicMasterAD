@@ -9,6 +9,7 @@ import Dashboard from '~/Pages/Dashboard/Dashboard.jsx';
 import User from '~/Pages/User/User.jsx'
 import Products from '~/Pages/Products/Products.jsx';
 import ProductUpload from '~/Pages/Products/ProductUpload.jsx';
+import ProductUpdate from '~/Pages/Products/ProductUpdate.jsx';
 import ProductUploadSample from '~/Pages/Products/UploadSample.jsx';
 import Login from '~/Pages/Login/Login.jsx';
 //
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />
+  },
+  {
+    path: "/update",
+    element: <ProductUpdate />
   }
 ]);
 
