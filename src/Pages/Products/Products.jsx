@@ -16,12 +16,16 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
+import Pagination from '@mui/material/Pagination';
+import { useNavigate } from 'react-router';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const Products = () => {
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState([
     {
       _id: "681426bb1a63c7d17d37f91d",
@@ -118,25 +122,6 @@ const Products = () => {
     if (productViewerIndex === index) setProductViewerIndex(null)
     else {
       setProductViewerIndex(index)
-      // api.get(`/user/displayData/electronic/${index}`).then(res => {
-      //   console.log('Product details:', res.data);
-      //   setCurrProdName(res.data.data.name);
-      //   setCurrProdImg(res.data.data.electronicImgs);
-      //   setCurrProdAvailable(res.data.data.available);
-      //   setCurrProdMainCategory(res.data.data.mainCategory);
-      //   setCurrProdCategories(res.data.data.categories);
-      //   setCurrProdPrice(res.data.data.price);
-      //   setCurrProdQuantitySold(res.data.data.quantitySold);
-      //   setCurrProdBrandName(res.data.data.brandName);
-      //   setCurrProdPublishedDate(res.data.data.publishDate);
-      //   setCurrProdDescription(res.data.description);
-      //   // setCurrProdSpecifications(res.data.specifications);
-      //   setCurrProdDiscount(res.data.data.discount);
-      //   setCurrProdRating(res.data.data.rating);
-      //   setCurrProdNumReview(res.data.data.numReview);
-      //   setCurrProdFollowers(res.data.data.followers);
-      //   setCurrProdId(res.data.data._id)
-      // })
     }
   }
 
@@ -166,26 +151,43 @@ const Products = () => {
   };
 
   const [keyword, setKeyword] = useState('');
-  const handleSearch = () => {
+  const [isSearching, setIsSearching] = useState(false);
+  const handleSearch = (page) => {
+    setCurrentPage(page);
+    if (keyword === '') {
+      setIsSearching(false);
+      fetchData(1);
+      return;
+    }
+    setIsSearching(true);
     console.log('Search:', keyword);
-    api.get(`/user/displayData/search/electronic?keyword=${keyword}&sortBy=publishDate&sortOrder=desc&page=1&limit=10`).then(res => {
+    api.get(`/user/displayData/search/electronic?keyword=${keyword}&sortBy=publishDate&sortOrder=desc&page=${page}&limit=10`).then(res => {
       console.log('Search result:', res.data);
       setProducts(res.data.data);
+      setTotalPage(res.data.totalPages);
     }).catch(err => {
       console.error('Error fetching products:', err);
     })
   }
   const [totalPage, setTotalPage] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
   const [nextPage, setNextPage] = useState(2);
-  useEffect(() => {
-    apiAuth.get('/admin/electronic?page=1&limit=10').then(res => {
-      console.log('Products:', res.data);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const handleChangePage = (event, value) => {
+    setCurrentPage(value);
+    if (isSearching === false) fetchData(value);
+    else handleSearch(value);
+  }
+  const fetchData = (page) => {
+    apiAuth.get(`/admin/electronic?page=${page}&limit=10`).then(res => {
       setProducts(res.data.electronics);
       setTotalPage(res.data.pagination.totalPages);
-      setCurrentPage(res.data.pagination.currentPage);
       setNextPage(res.data.pagination.nextPage);
     })
+  }
+
+  useEffect(() => {
+    fetchData(1);
   }, [])
   return (
     <>
@@ -206,9 +208,11 @@ const Products = () => {
             }}
           />
           <br />
-          <Button variant="outlined" className='!m-1' onClick={() => handleSearch()}>Search</Button>
+          <Button variant="outlined" className='!m-1' onClick={() => handleSearch(1)}>Search</Button>
         </div>
-
+        <div className='flex justify-start p-5'>
+          <Pagination count={totalPage} page={currentPage} onChange={handleChangePage} variant="outlined" />
+        </div>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs text-gray-700 dark:text-white dark:bg-gray-800 uppercase bg-gray-50">
             <tr>
@@ -248,10 +252,21 @@ const Products = () => {
             {
               products.map((product, index) => (
                 <>
-                  <tr className="border-b border-gray-200 dark:text-white dark:bg-gray-800" index={product.orderid} onClick={() => handleOpenUpdateDialog(index)}>
-                    <th scope="row" className="dark:text-white dark:bg-gray-800 px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-l border-[rgba(0,0,0,0.2)]">
+                  <tr className="border-b border-gray-200 dark:text-white dark:bg-gray-800" index={product.orderid} onClick={() => {
+                    navigate(`/update`, {
+                      state: {
+                        name: product.name,
+                        available: product.available,
+                        price: product.price,
+                        brandname: product.brandName,
+                        description: product.description
+                      }
+                    })
+                    handleOpenUpdateDialog(index)
+                  }}>
+                    <td scope="row" className="dark:text-white dark:bg-gray-800 px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-l border-[rgba(0,0,0,0.2)]">
                       {product.name}
-                    </th>
+                    </td>
                     <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)] grid grid-cols-2 gap-2">
                       {product.electronicImgs.map((ig, index) => {
                         return <>
@@ -372,7 +387,7 @@ const Products = () => {
             }
           </tbody>
         </table>
-      </div>
+      </div >
     </>
   )
 }
