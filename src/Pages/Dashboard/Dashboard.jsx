@@ -4,8 +4,15 @@ import CustomButton from '~/Components/Button/CustomButton.jsx'
 import { Button } from '@mui/material'
 import { useNavigate } from 'react-router'
 import { useDispatch } from 'react-redux'
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+//
 import { logout } from '~/redux/userSlice.js'
 import { api, apiAuth } from '~/services/api'
+// Endpoints
+import OrdersEndpoint from '~/services/orders.endpoints.js'
 // Icons
 import { FaPlus } from "react-icons/fa6";
 // Img
@@ -83,6 +90,57 @@ const Dashboard = () => {
       updatedAt: "2023-10-02",
     }
   ])
+  const [orders, setOrders] = useState([
+    {
+      address: {
+        address: "123 Main St, Springfield, USA",
+        name: "",
+        phone: ""
+      },
+      createdAt: "2023-10-01T12:00:00.000Z",
+      listElectronics: [
+        {
+          electronicID: {
+            discount: 0,
+            electronicImgs: [
+              {
+                public_id: "default_electronic_image",
+                url: "https://example.com/default_image.jpg",
+                _id: "default_image_id"
+              }
+            ],
+            name: "Sample Electronic",
+            price: 100,
+            rating: 4.5,
+            _id: "sample_electronic_id",
+          },
+          quantity: 1,
+          _id: "0"
+        }
+      ],
+      note: "Giao hang nhanh",
+      paymentMethod: "direct",
+      paymentStatus: "pending",
+      quantity: 1,
+      status: "pending",
+      time: "2023-10-01T12:00:00.000Z",
+      totalPrice: 100,
+      updatedAt: "2023-10-01T12:00:00.000Z",
+      _id: "0",
+      userID: {
+        email: "",
+        name: "",
+        phone: "",
+        _id: "",
+      },
+      __v: 0
+    }
+  ])
+  const [orderStatus, setOrderStatus] = useState('pending'); //  ['pending','canceled','rejected','confirmed','processing','in transit','delivered']
+  const handleChangeOrderStatus = (event) => {
+    setOrderStatus(event.target.value);
+    fetchOrders(event.target.value);
+  };
   const [orderViewerIndex, setOrderViewerIndex] = useState(null);
 
   const [loading, setLoading] = useState(false)
@@ -151,12 +209,25 @@ const Dashboard = () => {
 
     setOpacity((op) => ({ ...op, [dataKey]: 1 }));
   };
+  const fetchOrders = async (status) => {
+    try {
+      const response = await apiAuth.get(OrdersEndpoint.getOrdersByStatus(status || orderStatus));
+      setOrders(response.data.data);
+      console.log("check orders: ", response.data)
+    }
+    catch (error) {
+      console.error("Error fetching orders:", error);
+      // Handle error appropriately, e.g., show a notification or alert
+    }
+  }
+
   useEffect(() => {
     if (user == null) {
       // Redirect to login page if user is not authenticated
       navigate('/login')
     }
-  })
+    fetchOrders("pending")
+  }, [])
   return (
     <>
       <div className='w-full p-5 border border-[rgba(0,0,0,0.1)] flex items-center gap-8 mb-5 rounded-md'>
@@ -210,85 +281,108 @@ const Dashboard = () => {
         <div className='py-3'>
           <h2 className='py-3 px-3 font-[600] text-[20px]'>Recent Orders</h2>
         </div>
-        {/* <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+        <div className='py-3 px-3 flex items-center gap-3'>
+          {/* ['pending','canceled','rejected','confirmed','processing','in transit','delivered'] */}
+          <FormControl>
+            <InputLabel id="demo-simple-select-label">Age</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={orderStatus}
+              label="Order Status"
+              onChange={handleChangeOrderStatus}
+            >
+              <MenuItem value={'pending'} selected>Pending</MenuItem>
+              <MenuItem value={"canceled"}>Canceled</MenuItem>
+              <MenuItem value={"rejected"}>Rejected</MenuItem>
+              <MenuItem value={"confirmed"}>Confirmed</MenuItem>
+              <MenuItem value={"processing"}>Processing</MenuItem>
+              <MenuItem value={"in transit"}>In Transit</MenuItem>
+              <MenuItem value={"delivered"}>Delivered</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+        <table>
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-6 py-3">
-                Order ID
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Customer
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Items
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Price
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Created
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Modified
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
+              <th scope="col" className="px-6 py-3">Order ID</th>
+              <th scope="col" className="px-6 py-3">Customer</th>
+              <th scope="col" className="px-6 py-3">Status</th>
+              <th scope="col" className="px-6 py-3">Items</th>
+              <th scope="col" className="px-6 py-3">Price</th>
+              <th scope="col" className="px-6 py-3">Created At</th>
+              <th scope="col" className="px-6 py-3">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {
-              products.map((product, index) => (
-                <>
-                  <tr className="odd:bg-white even:bg-gray-50 border-b border-gray-200">
-                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                      #{product.orderid}
-                    </th>
-                    <td className="px-6 py-4">
-                      <div className='flex items-center gap-2'>
-                        <img src={product.customer.avatarurl !== '' ? product.customer.avatarurl : avatar} alt="" className='w-[50px] h-[50px] rounded-full' />
-                        <div className='info'>
-                          <h3 className='font-[600]'>{product.customer.username}</h3>
-                          <p className='text-[14px]'>{product.customer.email}</p>
-                        </div>
+            {orders.map((order, index) => (
+              <React.Fragment key={index}>
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {order._id}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className='flex items-center gap-3'>
+                      <img src={avatar} alt="Avatar" className='w-[50px] h-[50px] rounded-full' />
+                      <div>
+                        <p className='font-[600]'>{order?.userID?.name || "Unknown User"}</p>
+                        <p className='text-[14px] text-gray-500'>{order?.userID?.email || "No Email"}</p>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      {product.items}
-                    </td>
-                    <td className="px-6 py-4">
-                      {product.price}
-                    </td>
-                    <td className="px-6 py-4">
-                      {product.createdAt}
-                    </td>
-                    <td className="px-6 py-4">
-                      {product.updatedAt}
-                    </td>
-                    <td className="px-6 py-4">
-                      <p href="#" className="font-medium text-blue-600 hover:underline cursor-pointer" onClick={() => isOpenOrderView(product.orderid)}>View</p>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">{order.status}</td>
+                  <td className="px-6 py-4">{order.quantity}</td>
+                  <td className="px-6 py-4">{order.totalPrice}</td>
+                  <td className="px-6 py-4">{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td className="px-6 py-4">
+                    <Button variant="outlined" onClick={() => isOpenOrderView(index)}>
+                      {orderViewerIndex === index ? "Hide" : "View"}
+                    </Button>
+                  </td>
+                </tr>
+                <Collapse isOpened={orderViewerIndex === index}>
+                  <tr className="bg-gray-100 dark:bg-gray-700">
+                    <td colSpan={7} className="px-6 py-4">
+                      {/* Order details can be displayed here */}
+                      <p>Order Details for {order._id}</p>
                     </td>
                   </tr>
-                  <Collapse isOpened={orderViewerIndex === product.orderid ? true : false}>
-                    <div className='mx-5'>
-                      <h2 className='font-bold'>List products</h2>
-                      <ul className='w-full'>
-                        {product.products.map((prod, index) => {
-                          return <li className='w-full' key={index}>
-                            - {prod}
-                          </li>
-                        })}
-                      </ul>
-                    </div>
-                    <div className='mx-5'>
-                      <h2 className='font-bold'>Status: <span className={product.status === 'Pending' ? `text-yellow-600` : 'text-green-700'}>{product.status}</span></h2>
-                    </div>
-                  </Collapse>
-                </>
-              ))
-            }
+                  <tr>
+                    <td colSpan={7} className="px-6 py-4">
+                      {order.listElectronics.length > 0 ? (
+                        <div className=''>
+                          {order.listElectronics.map((item, idx) => (
+                            <div key={idx} className='flex border p-3 rounded-md bg-white dark:bg-gray-800'>
+                              <img src={item.electronicID.electronicImgs[0]?.url || "https://via.placeholder.com/150"} alt={item.electronicID.name} className='w-[150px] h-[150px] object-cover mb-2 rounded-md' />
+                              <div>
+                                <h3 className='font-semibold'>{item.electronicID.name}</h3>
+                                <p>Price: {item.electronicID.price}</p>
+                                <p>Quantity: {item.quantity}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p>No items in this order.</p>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan={7} className="px-6 py-4">
+                      <div className='flex flex-col gap-3'>
+                        <p><strong>Address:</strong> {order.address?.address || "No Address"}</p>
+                        <p><strong>Note:</strong> {order.note || "No Note"}</p>
+                        <p><strong>Payment Method:</strong> {order.paymentMethod || "No Payment Method"}</p>
+                        <p><strong>Payment Status:</strong> {order.paymentStatus || "No Payment Status"}</p>
+                        <p><strong>Total Price:</strong> {order.totalPrice || "No Total Price"}</p>
+                      </div>
+                    </td>
+                  </tr>
+                </Collapse>
+              </React.Fragment>
+            ))}
           </tbody>
-        </table> */}
+        </table>
       </div>
 
     </>
