@@ -25,7 +25,7 @@ import {
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/dashboard",
     element: (
       <section className='main'>
         <Header />
@@ -64,7 +64,7 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "/login",
+    path: "/",
     element: <Login />
   },
   {

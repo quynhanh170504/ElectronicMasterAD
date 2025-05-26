@@ -31,7 +31,7 @@ const Login = () => {
         if (response.data.success === true) {
           console.log('Login successful:', response.data)
           dispatch(loginSuccess({ user: response.data.data, token: response.data.accessToken }))
-          navigate('/')
+          navigate('/dashboard')
           alert('Login successful!')
         }
         setLoading(false)

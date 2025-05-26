@@ -23,7 +23,7 @@ function Sidebar() {
     <>
       <div className='dark:text-white dark:bg-gray-800 sidebar fixed top-0 left-0 bg-[#fff] w-[18%] h-full border-r border-[rgba(0,0,0,0.1)] py-2 px-4'>
         <div className='py-2 w-full'>
-          <Link to="/" className='flex items-center gap-2'>
+          <Link to="/dashboard" className='flex items-center gap-2'>
             <img src={Logo} alt="logo" className='w-[120px]' />
             <p className='font-bold text-[#CC7861] text-2xl'>Electronic Master</p>
           </Link>
@@ -31,7 +31,7 @@ function Sidebar() {
         </div>
         <ul className='mt-4'>
           <li>
-            <Button className='!w-full !capitalize !justify-start flex gap-3 text-[14px] !text-[rgba(0,0,0,0.8)] !font-[600] !py-2 hover:!bg-[#f1f1f1]' component={Link} to="/">
+            <Button className='!w-full !capitalize !justify-start flex gap-3 text-[14px] !text-[rgba(0,0,0,0.8)] !font-[600] !py-2 hover:!bg-[#f1f1f1]' component={Link} to="/dashboard">
               <RiDashboardLine className='text-[16px] dark:text-white' /><span className='dark:text-white '>Dashboard</span>
             </Button>
           </li>
@@ -60,7 +60,7 @@ function Sidebar() {
             </Collapse>
           </li>
           <li>
-            <Button className='!w-full !capitalize !justify-start flex gap-3 text-[14px] !text-[rgba(0,0,0,0.8)] !font-[600] !py-2 hover:!bg-[#f1f1f1]' component={Link} to="/users">
+            <Button className='!w-full !capitalize !justify-start flex gap-3 text-[14px] !text-[rgba(0,0,0,0.8)] !font-[600] !py-2 hover:!bg-[#f1f1f1]' component={Link} to="/dashboard/users">
               <FaRegUserCircle className='text-[16px] dark:text-white' /><span className='dark:text-white '>Users</span>
             </Button>
           </li>
@@ -74,13 +74,13 @@ function Sidebar() {
             <Collapse isOpened={submenuIndex === 2 ? true : false}>
               <ul className='w-full'>
                 <li className='w-full'>
-                  <Button className='!text-[rgba(0,0,0,0.8)] !font-semibold !capitalize !justify-start w-full !text-[13px] !font-[400] !pl-9 flex gap-3' component={Link} to="/products">
+                  <Button className='!text-[rgba(0,0,0,0.8)] !font-semibold !capitalize !justify-start w-full !text-[13px] !font-[400] !pl-9 flex gap-3' component={Link} to="/dashboard/products">
                     <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]'></span>
                     <span className='dark:text-white '>Products List</span>
                   </Button>
                 </li>
                 <li className='w-full'>
-                  <Button className='!text-[rgba(0,0,0,0.8)] !font-semibold !capitalize !justify-start w-full !text-[13px] !font-[400] !pl-9 flex gap-3' component={Link} to="/products/upload">
+                  <Button className='!text-[rgba(0,0,0,0.8)] !font-semibold !capitalize !justify-start w-full !text-[13px] !font-[400] !pl-9 flex gap-3' component={Link} to="/dashboard/products/upload">
                     <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]'></span>
                     <span className='dark:text-white '>Product Upload</span>
                   </Button>

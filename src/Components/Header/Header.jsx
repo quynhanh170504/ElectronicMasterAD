@@ -35,6 +35,7 @@ const Header = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user.user)
+  console.log("check user: ", user)
   const [anchorMyAcc, setAnchorMyAcc] = useState(null);
   const openMyAcc = Boolean(anchorMyAcc);
   const handleClickMyAcc = (event) => {
@@ -46,7 +47,7 @@ const Header = () => {
 
   const handleLogOut = () => {
     dispatch(logout())
-    navigate('/login')
+    navigate('/')
   }
 
   const [theme, setTheme] = useState('light')
@@ -62,6 +63,9 @@ const Header = () => {
   }, [])
 
   useEffect(() => {
+    if (user === null) {
+      navigate('/login')
+    }
     const html = document.documentElement
     html.setAttribute('data-theme', theme)
     localStorage.setItem('theme', theme)
@@ -80,7 +84,7 @@ const Header = () => {
         <div className='relative'>
           <div className='rounded-full w-[35px] h-[35px] overflow-hidden cursor-pointer' onClick={handleClickMyAcc}>
             <img
-              src={user.avatar.url === '' ? avatar : user.avatar.url} alt="avartar" className='w-full h-full object-cover' />
+              src={user?.avatar?.url === '' ? avatar : user?.avatar?.url} alt="avartar" className='w-full h-full object-cover' />
           </div>
           <Menu
             anchorEl={anchorMyAcc}
@@ -122,11 +126,11 @@ const Header = () => {
             <MenuItem onClick={handleCloseMyAcc} className='!bg-white'>
               <div className='flex items-center gap-3'>
                 <div className='rounded-full w-[35px] h-[35px] overflow-hidden cursor-pointer' onClick={handleClickMyAcc}>
-                  <img src={user.avatar.url === '' ? avatar : user.avatar.url} alt="avartar" className='w-full h-full object-cover' />
+                  <img src={user?.avatar?.url === '' ? avatar : user?.avatar?.url} alt="avartar" className='w-full h-full object-cover' />
                 </div>
                 <div className='info'>
-                  <h3 className='text-[15px] font-[500] leading-5'>{user.username}</h3>
-                  <p className='text-[12px] font-[400] opacity-75'>{user.email}</p>
+                  <h3 className='text-[15px] font-[500] leading-5'>{user?.username}</h3>
+                  <p className='text-[12px] font-[400] opacity-75'>{user?.email}</p>
                 </div>
               </div>
             </MenuItem>
