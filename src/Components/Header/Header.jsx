@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '~/redux/userSlice.js';
 //icons
 import { RiMenu2Line } from "react-icons/ri";
@@ -10,7 +10,7 @@ import { FaRegUser } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import { MdOutlineDarkMode } from "react-icons/md";
 import { MdDarkMode } from "react-icons/md";
-
+import avatar from '~/assets/default_avatar.jpg';
 //badge
 import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
@@ -34,6 +34,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const Header = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.user.user)
   const [anchorMyAcc, setAnchorMyAcc] = useState(null);
   const openMyAcc = Boolean(anchorMyAcc);
   const handleClickMyAcc = (event) => {
@@ -73,19 +74,13 @@ const Header = () => {
   return (
     <header className='w-full h-[auto] py-2 pl-74 shadow-md pr-7 bg-[#f1f1f1] border-b border-[rgba(0,0,0,0.1)] flex items-center justify-between fixed z-100 dark:bg-[#1e1e2f] dark:border-[rgba(255,255,255,0.1)]'>
       <div className='part1'>
-        <Button className='!w-[40px] !h-[40px] !rounded-full !min-w-[40px] !text-[rgba(0,0,0,0.8)]'>
-          <RiMenu2Line className='text-[18px] text-[rgba(0,0,0,0.8)]' />
-        </Button>
+
       </div>
       <div className='part2 flex items-center justify-end gap-4'>
-        <IconButton aria-label="cart">
-          <StyledBadge badgeContent={4} color="secondary">
-            <FaRegBell />
-          </StyledBadge>
-        </IconButton>
         <div className='relative'>
           <div className='rounded-full w-[35px] h-[35px] overflow-hidden cursor-pointer' onClick={handleClickMyAcc}>
-            <img src="https://ecme-react.themenate.net/img/avatars/thumb-1.jpg" alt="avartar" className='w-full h-full object-cover' />
+            <img
+              src={user.avatar.url === '' ? avatar : user.avatar.url} alt="avartar" className='w-full h-full object-cover' />
           </div>
           <Menu
             anchorEl={anchorMyAcc}
@@ -127,18 +122,15 @@ const Header = () => {
             <MenuItem onClick={handleCloseMyAcc} className='!bg-white'>
               <div className='flex items-center gap-3'>
                 <div className='rounded-full w-[35px] h-[35px] overflow-hidden cursor-pointer' onClick={handleClickMyAcc}>
-                  <img src="https://ecme-react.themenate.net/img/avatars/thumb-1.jpg" alt="avartar" className='w-full h-full object-cover' />
+                  <img src={user.avatar.url === '' ? avatar : user.avatar.url} alt="avartar" className='w-full h-full object-cover' />
                 </div>
                 <div className='info'>
-                  <h3 className='text-[15px] font-[500] leading-5'>Oni-chan</h3>
-                  <p className='text-[12px] font-[400] opacity-75'>admin@meme.com</p>
+                  <h3 className='text-[15px] font-[500] leading-5'>{user.username}</h3>
+                  <p className='text-[12px] font-[400] opacity-75'>{user.email}</p>
                 </div>
               </div>
             </MenuItem>
             <Divider />
-            <MenuItem onClick={handleCloseMyAcc} className='flex items-center gap-3'>
-              <FaRegUser /><span>My account</span>
-            </MenuItem>
             <MenuItem onClick={handleLogOut} className='flex items-center gap-3'>
               <IoIosLogOut /><span>Log out</span>
             </MenuItem>
@@ -148,7 +140,6 @@ const Header = () => {
           checked={theme === 'dark' ? true : false}
           onChange={toggleTheme}
         />
-        {theme === 'dark' ? <MdDarkMode size={30} /> : <MdOutlineDarkMode size={30} />}
       </div>
     </header>
   )

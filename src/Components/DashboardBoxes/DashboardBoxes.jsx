@@ -14,7 +14,7 @@ import { BsBank } from "react-icons/bs";
 import { RiProductHuntLine } from "react-icons/ri";
 
 
-const DashboardBoxes = () => {
+const DashboardBoxes = ({ NewOrders = 0, TodayRevenue = 0, TotalRevenue = 0, TotalProduct = 0 }) => {
   return (
     <>
       <Swiper
@@ -25,41 +25,41 @@ const DashboardBoxes = () => {
         className="dashboardBoxesSlider"
       >
         <SwiperSlide>
-          <div className='box p-5 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
+          <div className='box p-5 cursor-pointer rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
             <FaGift className='text-[30px] text-[#3872fa]' />
             <div className='info w-[70%]'>
               <h3>News Orders</h3>
-              <b>1,390</b>
+              <b>{NewOrders}</b>
             </div>
             <IoStatsChartSharp className='text-[50px] text-[#3872fa]' />
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <div className='box p-5 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
+          <div className='box p-5 cursor-pointer rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
             <GiPieChart className='text-[30px] text-[#10b981]' />
             <div className='info w-[70%]'>
               <h3>Sales</h3>
-              <b>$57,891</b>
+              <b>${TodayRevenue}</b>
             </div>
             <IoStatsChartSharp className='text-[50px] text-[#10b981]' />
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <div className='box p-5 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
+          <div className='box p-5 cursor-pointer rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
             <BsBank className='text-[30px] text-[#7928ca]' />
             <div className='info w-[70%]'>
-              <h3>Revenue</h3>
-              <b>$12,390</b>
+              <h3>Total Revenue</h3>
+              <b>{TotalRevenue} VND</b>
             </div>
             <IoStatsChartSharp className='text-[50px] text-[#7928ca]' />
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <div className='box p-5 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
+          <div className='box p-5 cursor-pointer rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
             <RiProductHuntLine className='text-[30px] text-[#3812fa]' />
             <div className='info w-[70%]'>
               <h3>Total Products</h3>
-              <b>390</b>
+              <b>{TotalProduct}</b>
             </div>
             <IoStatsChartSharp className='text-[50px] text-[#3812fa]' />
           </div>
