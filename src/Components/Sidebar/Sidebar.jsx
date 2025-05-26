@@ -9,6 +9,7 @@ import { FaRegImage } from "react-icons/fa";
 import { BiCategoryAlt } from "react-icons/bi";
 import { IoBagCheckOutline } from "react-icons/io5";
 import { FaAngleDown } from "react-icons/fa";
+import Logo from '~/assets/logo2.png';
 // collapse
 import { Collapse } from 'react-collapse';
 
@@ -22,9 +23,11 @@ function Sidebar() {
     <>
       <div className='dark:text-white dark:bg-gray-800 sidebar fixed top-0 left-0 bg-[#fff] w-[18%] h-full border-r border-[rgba(0,0,0,0.1)] py-2 px-4'>
         <div className='py-2 w-full'>
-          <Link to="/">
-            <img src="https://ecme-react.themenate.net/img/logo/logo-light-full.png" alt="logo" className='w-[120px]' />
+          <Link to="/" className='flex items-center gap-2'>
+            <img src={Logo} alt="logo" className='w-[120px]' />
+            <p className='font-bold text-[#CC7861] text-2xl'>Electronic Master</p>
           </Link>
+
         </div>
         <ul className='mt-4'>
           <li>
@@ -85,7 +88,7 @@ function Sidebar() {
               </ul>
             </Collapse>
           </li>
-          <li>
+          {/* <li>
             <Button className='!w-full !capitalize !justify-start flex gap-3 text-[14px] !text-[rgba(0,0,0,0.8)] !font-[600] !py-2 hover:!bg-[#f1f1f1]' onClick={() => isOpenSubMenu(3)}>
               <BiCategoryAlt className='text-[16px] dark:text-white' /><span className='dark:text-white '>Category</span>
               <span className='ml-auto w-[30px] h-[30px] flex items-center justify-center'>
@@ -108,12 +111,12 @@ function Sidebar() {
                 </li>
               </ul>
             </Collapse>
-          </li>
-          <li>
+          </li> */}
+          {/* <li>
             <Button className='!w-full !capitalize !justify-start flex gap-3 text-[14px] !text-[rgba(0,0,0,0.8)] !font-[600] !py-2 hover:!bg-[#f1f1f1]' component={Link} to="/">
               <IoBagCheckOutline className='text-[16px] dark:text-white' /><span className='dark:text-white '>Orders</span>
             </Button>
-          </li>
+          </li> */}
         </ul>
       </div>
     </>

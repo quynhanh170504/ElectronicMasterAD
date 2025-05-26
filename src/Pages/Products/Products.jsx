@@ -255,11 +255,7 @@ const Products = () => {
                   <tr className="border-b border-gray-200 dark:text-white dark:bg-gray-800" index={product.orderid} onClick={() => {
                     navigate(`/update`, {
                       state: {
-                        name: product.name,
-                        available: product.available,
-                        price: product.price,
-                        brandname: product.brandName,
-                        description: product.description
+                        id: product._id,
                       }
                     })
                     handleOpenUpdateDialog(index)

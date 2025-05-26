@@ -11,7 +11,8 @@
 const ElectronicEndpoint = {
   createElectronic: '/admin/electronic',
   updateElectronic: (id) => `/admin/electronic/${id}`,
-  deleteElectronic: (id) => `/admin/electronic/${id}`
+  deleteElectronic: (id) => `/admin/electronic/${id}`,
+  deleteElecImg: (id) => `/admin/electronic/delete-image/${id}`
 }
 
 export default ElectronicEndpoint

@@ -57,7 +57,7 @@ const router = createBrowserRouter([
           },
           {
             path: "upload",
-            Component: ProductUploadSample
+            Component: ProductUpload
           }
         ]
       }
