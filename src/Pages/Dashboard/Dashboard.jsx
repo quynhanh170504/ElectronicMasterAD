@@ -10,7 +10,6 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import LoadingScreen from '~/Components/LoadingScreen'
 //
-import { logout } from '~/redux/userSlice.js'
 import { api, apiAuth } from '~/services/api'
 // Endpoints
 import OrdersEndpoint from '~/services/orders.endpoints.js'
