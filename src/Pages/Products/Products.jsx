@@ -18,6 +18,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import Pagination from '@mui/material/Pagination';
 import { useNavigate } from 'react-router';
+import ElectronicEndpoint from '~/services/electronic.endpoint';
+import LoadingScreen from '~/Components/LoadingScreen';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -116,13 +118,20 @@ const Products = () => {
   const [currProdNumReview, setCurrProdNumReview] = useState(0);
   const [currProdFollowers, setCurrProdFollowers] = useState(0);
   const [currProdId, setCurrProdId] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [productViewerIndex, setProductViewerIndex] = useState(null);
-  const isOpenProductView = (index) => {
-    if (productViewerIndex === index) setProductViewerIndex(null)
-    else {
-      setProductViewerIndex(index)
-    }
+  const handleDeleteProduct = (productId) => {
+    setLoading(true);
+    apiAuth.delete(ElectronicEndpoint.deleteElectronic(productId)).then(res => {
+      alert('Product deleted successfully');
+      console.log('Product deleted:', res.data);
+      fetchData(currentPage);
+    }).catch(err => {
+      console.error('Error deleting product:', err);
+    }).finally(() => {
+      setLoading(false);
+    });
   }
 
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
@@ -252,15 +261,14 @@ const Products = () => {
             {
               products.map((product, index) => (
                 <>
-                  <tr className="border-b border-gray-200 dark:text-white dark:bg-gray-800" index={product.orderid} onClick={() => {
-                    navigate(`/update`, {
-                      state: {
-                        id: product._id,
-                      }
-                    })
-                    handleOpenUpdateDialog(index)
-                  }}>
-                    <td scope="row" className="dark:text-white dark:bg-gray-800 px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-l border-[rgba(0,0,0,0.2)]">
+                  <tr className="border-b border-gray-200 dark:text-white dark:bg-gray-800" index={product.orderid}>
+                    <td scope="row" className="dark:text-white dark:bg-gray-800 px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-l border-[rgba(0,0,0,0.2)] cursor-pointer hover:bg-[#f1f1f1]" onClick={() => {
+                      navigate(`/update`, {
+                        state: {
+                          id: product._id,
+                        }
+                      })
+                    }}>
                       {product.name}
                     </td>
                     <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)] grid grid-cols-2 gap-2">
@@ -297,93 +305,16 @@ const Products = () => {
                       {product.publishDate}
                     </td>
                     <td className="px-6 py-4 border-l border-r border-[rgba(0,0,0,0.2)]">
-                      <p href="#" className="font-medium text-blue-600 hover:underline cursor-pointer" onClick={() => isOpenProductView(product._id)}>{productViewerIndex === product._id ? 'Close' : 'View'}</p>
+                      <p href="#" className="font-medium text-blue-600 hover:underline cursor-pointer" onClick={() => handleDeleteProduct(product._id)}>Delete</p>
                     </td>
                   </tr>
-                  <Dialog
-                    fullScreen
-                    open={openUpdateDialog}
-                    onClose={handleCloseUpdateDialog}
-                    TransitionComponent={Transition}
-                  >
-                    <AppBar sx={{ position: 'relative', backgroundColor: '#000' }}>
-                      <Toolbar>
-                        <IconButton
-                          edge="start"
-                          color="inherit"
-                          onClick={handleCloseUpdateDialog}
-                          aria-label="close"
-                        >
-                          <CloseIcon />
-                        </IconButton>
-                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                          Update {currProdName}
-                        </Typography>
-                        <Button autoFocus color="inherit" onClick={handleCloseUpdateDialog}>
-                          update
-                        </Button>
-                      </Toolbar>
-                    </AppBar>
-                    <div className='w-full p-4 border-l border-r border-[rgba(0,0,0,0.2)]'>
-                      <div className="grid grid-cols-2 gap-4">
-                        <TextField
-                          label="Name"
-                          variant="standard"
-                          className="!w-full dark:bg-gray-800"
-                          multiline
-                          value={currProdName}
-                          onChange={(e) =>
-                            setCurrProdName(e.target.value)
-                          }
-                        />
-                        <TextField
-                          label="Available"
-                          variant="standard"
-                          className="!w-full dark:bg-gray-800"
-                          type="number"
-                          value={currProdAvailable}
-                          onChange={(e) =>
-                            setCurrProdAvailable(e.target.value)
-                          }
-                        />
-                        <TextField
-                          label="Price"
-                          variant="standard"
-                          className="!w-full dark:bg-gray-800"
-                          type="number"
-                          value={currProdPrice}
-                          onChange={(e) =>
-                            setCurrProdPrice(e.target.value)
-                          }
-                        />
-                        <TextField
-                          label="Brand Name"
-                          variant="standard"
-                          className="!w-full dark:bg-gray-800"
-                          value={currProdBrandName}
-                          onChange={(e) =>
-                            setCurrProdBrandName(e.target.value)
-                          }
-                        />
-                      </div>
-                      <TextField
-                        label="Description"
-                        variant="standard"
-                        className='!w-full dark:bg-gray-800'
-                        multiline
-                        value={currProdDescription}
-                        onChange={e => setCurrProdDescription(e.target.value)}
-                      />
-                      <Button variant='contained' className='!mt-4 !mr-4 !bg-black'>Update</Button>
-                      <Button variant='outlined' className='!mt-4' onClick={() => handleCloseUpdateDialog()}>Close</Button>
-                    </div>
-                  </Dialog>
                 </>
               ))
             }
           </tbody>
         </table>
       </div >
+      {loading && <LoadingScreen />}
     </>
   )
 }
