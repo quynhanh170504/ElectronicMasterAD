@@ -20,6 +20,7 @@ import Pagination from '@mui/material/Pagination';
 import { useNavigate } from 'react-router';
 import ElectronicEndpoint from '~/services/electronic.endpoint';
 import LoadingScreen from '~/Components/LoadingScreen';
+import Tag from '~/Components/Tag/Tag';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -289,7 +290,7 @@ const Products = () => {
                     </td>
                     <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)]">
                       {product.categories.map(cate => {
-                        return <p>{cate}</p>
+                        return <Tag text={cate} />
                       })}
                     </td>
                     <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)]">
