@@ -95,6 +95,7 @@ const ProductUpdate = () => {
     p: 4,
   };
   const fetchElecById = () => {
+    setLoading(true)
     api.get(`/user/displayData/electronic/${id}`).then(res => {
       console.log("check electronic: ", res.data.data)
       if (res.data.success === true) {
@@ -121,7 +122,7 @@ const ProductUpdate = () => {
         setProductSpecifications(cleanedSpecifications);
         setProductCategories(res.data.data.categories || []);
       }
-    })
+    }).catch(err => console.log(err)).finally(() => setLoading(false))
   }
   const handleFileSelect = (event) => {
     const files = Array.from(event.target.files);
@@ -303,99 +304,166 @@ const ProductUpdate = () => {
         <div className="card__content">
           <div className='w-full p-4 border-l border-r border-[rgba(0,0,0,0.2)]'>
             <div className="grid grid-cols-2 gap-4">
-              <TextField
-                label="Name"
-                variant="standard"
-                className="!w-full dark:bg-gray-800 dark:!text-white"
-                multiline
-                value={productName}
-                onChange={e => setProductName(e.target.value)}
-              />
-              <TextField
-                label="Available"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                type="number"
-                value={productAvailable}
-                onChange={e => setProductAvailable(e.target.value)}
-              />
-              <TextField
-                label="Price"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                type="number"
-                value={productPrice}
-                onChange={e => setProductPrice(e.target.value)}
-              />
-              <TextField
-                label="Brand Name"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                value={productBrandName}
-                onChange={e => setProductBrandName(e.target.value)}
-              />
-              <TextField
-                label="Discount"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                type='number'
-                value={productDiscount}
-                onChange={e => setProductDiscount(e.target.value)}
-              />
-              <TextField
-                label="Main Category"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                value={productMainCategory}
-                onChange={e => setProductMainCategory(e.target.value)}
-              />
-              {productCategories.length > 0 && (
-                <TextField
-                  label="Categories"
-                  variant="standard"
-                  className="!w-full dark:bg-gray-800"
-                  value={productCategories.join(', ')}
-                  onChange={e => setProductCategories(e.target.value.split(',').map(cat => cat.trim()))}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name
+                </label>
+                <input
+                  name="name"
+                  value={productName}
+                  onChange={e => setProductName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Available
+                </label>
+                <input
+                  name="available"
+                  type='number'
+                  value={productAvailable}
+                  onChange={e => setProductAvailable(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Price
+                </label>
+                <input
+                  name="price"
+                  type='number'
+                  value={productPrice}
+                  onChange={e => setProductPrice(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Brand name
+                </label>
+                <input
+                  name="Brand name"
+                  value={productBrandName}
+                  onChange={e => setProductBrandName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Discount
+                </label>
+                <input
+                  name="discount"
+                  type='number'
+                  value={productDiscount}
+                  onChange={e => setProductDiscount(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Main Category
+                </label>
+                <input
+                  name="MainCategory"
+                  value={productMainCategory}
+                  onChange={e => setProductMainCategory(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+              {productCategories.length > 0 && (
+                // <TextField
+                //   label="Categories"
+                //   variant="standard"
+                //   className="!w-full dark:bg-gray-800"
+                //   value={productCategories.join(', ')}
+                //   onChange={e => setProductCategories(e.target.value.split(',').map(cat => cat.trim()))}
+                // />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Main Category
+                  </label>
+                  <input
+                    name="MainCategory"
+                    value={productCategories.join(', ')}
+                    onChange={e => setProductCategories(e.target.value.split(',').map(cat => cat.trim()))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
               )}
               {productSpecifications.length > 0 && productSpecifications[0].attributes.map((attr, index) => (
-                <TextField
-                  key={index}
-                  label={attr.name}
-                  variant="standard"
-                  className="!w-full dark:bg-gray-800"
-                  value={attr.value}
-                  onChange={e => {
-                    const newSpecifications = [...productSpecifications];
-                    newSpecifications[0].attributes[index].value = e.target.value;
-                    setProductSpecifications(newSpecifications);
-                  }}
-                />
+                // <TextField
+                //   key={index}
+                //   label={attr.name}
+                //   variant="standard"
+                //   className="!w-full dark:bg-gray-800"
+                //   value={attr.value}
+                //   onChange={e => {
+                //     const newSpecifications = [...productSpecifications];
+                //     newSpecifications[0].attributes[index].value = e.target.value;
+                //     setProductSpecifications(newSpecifications);
+                //   }}
+                // />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {attr.name}
+                  </label>
+                  <input
+                    name="MainCategory"
+                    value={attr.value}
+                    onChange={e => {
+                      const newSpecifications = [...productSpecifications];
+                      newSpecifications[0].attributes[index].value = e.target.value;
+                      setProductSpecifications(newSpecifications);
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
               ))}
               {productSpecifications.length > 1 && productSpecifications[1].attributes.map((attr, index) => (
-                <TextField
-                  key={index}
-                  label={attr.name}
-                  variant="standard"
-                  className="!w-full dark:bg-gray-800"
-                  value={attr.value}
-                  onChange={e => {
-                    const newSpecifications = [...productSpecifications];
-                    newSpecifications[1].attributes[index].value = e.target.value;
-                    setProductSpecifications(newSpecifications);
-                  }}
-                />
+                // <TextField
+                //   key={index}
+                //   label={attr.name}
+                //   variant="standard"
+                //   className="!w-full dark:bg-gray-800"
+                //   value={attr.value}
+                //   onChange={e => {
+                //     const newSpecifications = [...productSpecifications];
+                //     newSpecifications[1].attributes[index].value = e.target.value;
+                //     setProductSpecifications(newSpecifications);
+                //   }}
+                // />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {attr.name}
+                  </label>
+                  <input
+                    name="MainCategory"
+                    value={attr.value}
+                    onChange={e => {
+                      const newSpecifications = [...productSpecifications];
+                      newSpecifications[1].attributes[index].value = e.target.value;
+                      setProductSpecifications(newSpecifications);
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
               ))}
             </div>
-            <TextField
-              label="Description"
-              variant="standard"
-              className='!w-full dark:bg-gray-800'
-              multiline
-              value={productDescription}
-              rows={10}
-              onChange={e => setProductDescription(e.target.value)}
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
+              <textarea
+                name="description"
+                rows={6}
+                value={productDescription}
+                onChange={e => setProductDescription(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              />
+            </div>
             {productImgs.length > 0 && (
               <div className="mb-6">
                 <h3 className="text-lg font-semibold mb-3">Images ({productImgs.length})</h3>
