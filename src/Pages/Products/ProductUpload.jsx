@@ -10,19 +10,20 @@ import { api, apiAuth } from '~/services/api';
 import ElectronicEndpoint from '~/services/electronic.endpoint.js';
 import { contents, operations } from '~/services/electronic.specification.attributes';
 import LoadingScreen from '~/Components/LoadingScreen';
+import { FiEdit2, FiTrash2, FiPlus, FiChevronRight, FiArrowLeft, FiStar } from 'react-icons/fi';
 
 const ProductUpdate = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const [productName, setProductName] = useState('');
-  const [productAvailable, setProductAvailable] = useState(0);
-  const [productPrice, setProductPrice] = useState(0);
+  const [productAvailable, setProductAvailable] = useState(1);
+  const [productPrice, setProductPrice] = useState(1);
   const [productBrandName, setProductBrandName] = useState('');
   const [productMainCategory, setProductMainCategory] = useState('');
   const [productCategories, setProductCategories] = useState(['electronics']);
   const [productDescription, setProductDescription] = useState('');
-  const [productDiscount, setProductDiscount] = useState(0);
+  const [productDiscount, setProductDiscount] = useState(1);
   const [productImgs, setProductImgs] = useState([]); // Added missing state
   const [productSpecifications, setProductSpecifications] = useState([
     {
@@ -262,6 +263,10 @@ const ProductUpdate = () => {
 
   }, []);
 
+  const handleSubmit = () => {
+
+  }
+
   return (
     <div className='p-10'>
       <div className="bg-white rounded-lg border  dark:bg-gray-800 dark:border-gray-700 shadow-lg mt-6">
@@ -285,166 +290,316 @@ const ProductUpdate = () => {
                 {error}
               </div>
             )}
+            <form onSubmit={handleSubmit} className="px-4 py-4 md:px-6 md:py-6">
+              <div className="flex flex-col md:flex-row gap-6">
+                {/* Cover image */}
 
-            <div className="grid grid-cols-2 gap-4">
-              <TextField
-                label="Name"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                multiline
-                value={productName}
-                onChange={e => setProductName(e.target.value)}
-              />
-              <TextField
-                label="Available"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                type="number"
-                value={productAvailable}
-                onChange={e => setProductAvailable(Number(e.target.value))}
-              />
-              <TextField
-                label="Price"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                type="number"
-                value={productPrice}
-                onChange={e => setProductPrice(Number(e.target.value))}
-              />
-              <TextField
-                label="Brand Name"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                value={productBrandName}
-                onChange={e => setProductBrandName(e.target.value)}
-              />
-              <TextField
-                label="Discount"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                type='number'
-                value={productDiscount}
-                onChange={e => setProductDiscount(Number(e.target.value))}
-              />
-              <TextField
-                label="Main Category"
-                variant="standard"
-                className="!w-full dark:bg-gray-800"
-                value={productMainCategory}
-                onChange={e => setProductMainCategory(e.target.value)}
-              />
-              {productCategories.length > 0 && (
-                <TextField
-                  label="Categories"
-                  variant="standard"
-                  className="!w-full dark:bg-gray-800"
-                  value={productCategories.join(', ')}
-                  onChange={e => setProductCategories(e.target.value.split(',').map(cat => cat.trim()))}
-                />
-              )}
-            </div>
+                {/* Story details form */}
+                <div className="flex-1 space-y-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Name
+                      </label>
+                      <input
+                        name="name"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        onChange={(e) => setProductName(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
 
-            <TextField
-              label="Description"
-              variant="standard"
-              className='!w-full dark:bg-gray-800 !mt-4'
-              multiline
-              value={productDescription}
-              rows={10}
-              onChange={e => setProductDescription(e.target.value)}
-            />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Price
+                      </label>
+                      <input
+                        name="price"
+                        type='number'
+                        value={productPrice}
+                        onChange={(e) => setProductPrice(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
 
-            {/* Content Specifications */}
-            {productSpecifications[0]?.attributes?.map((spec, index) => (
-              <TextField
-                key={`content-${spec.code}-${index}`}
-                label={spec.name}
-                variant="standard"
-                className="!w-full dark:bg-gray-800 !mb-4"
-                value={spec.value}
-                onChange={e => handleContentSpecificationChange(index, e.target.value)}
-              />
-            ))}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Available
+                      </label>
+                      <input
+                        name="available"
+                        type='number'
+                        value={productAvailable}
+                        onChange={(e) => setProductAvailable(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Discount
+                      </label>
+                      <input
+                        name="discount"
+                        type='number'
+                        value={productDiscount}
+                        onChange={(e) => setProductDiscount(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Brandname
+                      </label>
+                      <input
+                        name="brandname"
+                        value={productBrandName}
+                        onChange={(e) => setProductBrandName(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Main category
+                      </label>
+                      <input
+                        name="maincategory"
+                        value={productMainCategory}
+                        onChange={(e) => setProductMainCategory(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Categories
+                      </label>
+                      <input
+                        name="categories"
+                        value={productCategories.join(', ')}
+                        onChange={e => setProductCategories(e.target.value.split(',').map(cat => cat.trim()))}
 
-            {/* Operation Specifications */}
-            {productSpecifications[1]?.attributes?.map((spec, index) => (
-              <TextField
-                key={`operation-${spec.code}-${index}`}
-                label={spec.name}
-                variant="standard"
-                className="!w-full dark:bg-gray-800 !mb-4"
-                value={spec.value}
-                onChange={e => handleOperationSpecificationChange(index, e.target.value)}
-              />
-            ))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
+                  </div>
+                  {/*  */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <textarea
+                      name="description"
+                      rows={6}
+                      value={productDescription}
+                      onChange={e => setProductDescription(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    />
+                  </div>
+                  {/*  */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                    {/* Content Specifications */}
+                    {productSpecifications[0]?.attributes?.map((spec, index) => (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          {spec.name}
+                        </label>
+                        <input
+                          name="brand"
+                          value={spec.value}
+                          onChange={e => handleContentSpecificationChange(index, e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        />
+                      </div>
+                    ))}
+                    {/* Operation Specifications */}
+                    {productSpecifications[1]?.attributes?.map((spec, index) => (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          {spec.name}
+                        </label>
+                        <input
+                          value={spec.value}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                          onChange={e => handleOperationSpecificationChange(index, e.target.value)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
 
+              {/* Chapter management section */}
+
+              {/* Chapters table */}
+              {/* <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <div className="overflow-y-auto max-h-[400px]">
+                            <table className="min-w-full divide-y divide-gray-200">
+                              <thead className="bg-gray-50 sticky top-0">
+                                <tr>
+                                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chapter</th>
+                                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
+                                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pages</th>
+                                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Published</th>
+                                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody className="bg-white divide-y divide-gray-200">
+                                {chapters?.length > 0 ? (
+                                  chapters.map((chapter) => (
+                                    <tr key={chapter._id} className="hover:bg-gray-50">
+                                      {chapter.order ? (
+                                        <>
+                                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {chapter.chapter_title || 'No Title'}
+                                          </td>
+                                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                            {chapter.order || '-'}
+                                          </td>
+                                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                            {chapter.chapter_content.length || '-'} paragraphs
+                                          </td>
+                                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                            {'-'}
+                                          </td>
+                                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                            <div className="flex space-x-3">
+                                              <button
+                                                type="button"
+                                                onClick={() => handleEditChapter(chapter)}
+                                                className="text-teal-600 hover:text-teal-800 cursor-pointer"
+                                              >
+                                                Edit
+                                              </button>
+                                              <button
+                                                type="button"
+                                                onClick={() => handleDeleteChapter(chapter._id)}
+                                                className="text-red-600 hover:text-red-800 cursor-pointer"
+                                              >
+                                                Delete
+                                              </button>
+                                            </div>
+                                          </td>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {renderChapterTitle(chapter)}
+                                          </td>
+                                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                            {chapter.volume || '-'}
+                                          </td>
+                                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                            {chapter.pages || 0} pages
+                                          </td>
+                                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                            {chapter.publishDate
+                                              ? new Date(chapter.publishDate).toLocaleDateString()
+                                              : '-'}
+                                          </td>
+                                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                            <div className="flex space-x-3">
+                                              <button
+                                                type="button"
+                                                onClick={() => handleEditChapter(chapter)}
+                                                className="text-teal-600 hover:text-teal-800"
+                                              >
+                                                Edit
+                                              </button>
+                                              <button
+                                                type="button"
+                                                onClick={() => handleDeleteChapter(chapter.chapterid)}
+                                                className="text-red-600 hover:text-red-800"
+                                              >
+                                                Delete
+                                              </button>
+                                            </div>
+                                          </td>
+                                        </>
+                                      )}
+            
+                                    </tr>
+                                  ))
+                                ) : (
+                                  <tr>
+                                    <td colSpan="4" className="px-4 py-6 text-center text-gray-500">
+                                      No chapters found
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div> */}
+            </form>
             {/* File Input */}
-            <div className="mb-6">
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleFileSelect}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-              />
-              <p className="text-sm text-gray-500 mt-2">
-                Select multiple images (JPG, PNG, GIF). Max 5MB per file.
-              </p>
-            </div>
-
-            {/* Image Previews */}
-            {previews.length > 0 && (
+            <div className='px-6'>
               <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-3">Selected Images ({previews.length})</h3>
-                <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-4">
-                  {previews.map((preview, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={preview.url}
-                        alt={preview.name}
-                        className="w-full h-32 object-cover rounded border"
-                      />
-                      <button
-                        onClick={() => removeSelectedFile(index)}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
-                      >
-                        ×
-                      </button>
-                      <p className="text-xs text-gray-600 mt-1 truncate">{preview.name}</p>
-                    </div>
-                  ))}
-                </div>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                />
+                <p className="text-sm text-gray-500 mt-2">
+                  Select multiple images (JPG, PNG, GIF). Max 5MB per file.
+                </p>
               </div>
-            )}
-            {/* Uploaded Images Display */}
-            {uploadedImages.length > 0 && (
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold mb-3">Uploaded Images</h3>
-                <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-4">
-                  {uploadedImages.map((image, index) => (
-                    <div key={index} className="border rounded p-2">
-                      <img
-                        src={image.url}
-                        alt={`Uploaded ${index + 1}`}
-                        className="w-full h-32 object-cover rounded"
-                      />
-                      <p className="text-xs text-gray-600 mt-1">
-                        Public ID: {image.public_id}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
-            <Button
-              variant='contained'
-              className='!mt-4 !mr-4 !bg-black'
-              onClick={handleUploadProduct}
-              disabled={uploading}
-            >
-              {uploading ? 'Uploading...' : 'Upload'}
-            </Button>
+              {/* Image Previews */}
+              {previews.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-3">Selected Images ({previews.length})</h3>
+                  <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-4">
+                    {previews.map((preview, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={preview.url}
+                          alt={preview.name}
+                          className="w-full h-32 object-cover rounded border"
+                        />
+                        <button
+                          onClick={() => removeSelectedFile(index)}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                        >
+                          ×
+                        </button>
+                        <p className="text-xs text-gray-600 mt-1 truncate">{preview.name}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {/* Uploaded Images Display */}
+              {uploadedImages.length > 0 && (
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold mb-3">Uploaded Images</h3>
+                  <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-4">
+                    {uploadedImages.map((image, index) => (
+                      <div key={index} className="border rounded p-2">
+                        <img
+                          src={image.url}
+                          alt={`Uploaded ${index + 1}`}
+                          className="w-full h-32 object-cover rounded"
+                        />
+                        <p className="text-xs text-gray-600 mt-1">
+                          Public ID: {image.public_id}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <Button
+                variant='contained'
+                className='!mt-4 !mr-4 !bg-black'
+                onClick={handleUploadProduct}
+                disabled={uploading}
+              >
+                {uploading ? 'Uploading...' : 'Upload'}
+              </Button>
+            </div>
           </div>
         </div>
       </div>

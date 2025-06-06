@@ -1,30 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { api, apiAuth } from '~/services/api';
-// collapse
-import { Collapse } from 'react-collapse';
 //
-import TextField from '@mui/material/TextField';
+import { FiEdit2, FiTrash2, FiPlus, FiChevronRight, FiArrowLeft, FiStar } from 'react-icons/fi';
 import { Button } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemButton from '@mui/material/ListItemButton';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import Pagination from '@mui/material/Pagination';
 import { useNavigate } from 'react-router';
 import ElectronicEndpoint from '~/services/electronic.endpoint';
 import LoadingScreen from '~/Components/LoadingScreen';
-import Tag from '~/Components/Tag/Tag';
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const Products = () => {
   const navigate = useNavigate();
@@ -103,25 +86,9 @@ const Products = () => {
       __v: 0
     },
   ])
-  const [currProdName, setCurrProdName] = useState('');
-  const [currProdImg, setCurrProdImg] = useState([]);
-  const [currProdAvailable, setCurrProdAvailable] = useState(0);
-  const [currProdMainCategory, setCurrProdMainCategory] = useState('');
-  const [currProdCategories, setCurrProdCategories] = useState([]);
-  const [currProdPrice, setCurrProdPrice] = useState(0);
-  const [currProdQuantitySold, setCurrProdQuantitySold] = useState(0);
-  const [currProdBrandName, setCurrProdBrandName] = useState('');
-  const [currProdPublishedDate, setCurrProdPublishedDate] = useState('');
-  const [currProdDescription, setCurrProdDescription] = useState('');
-  const [currProdSpecifications, setCurrProdSpecifications] = useState([]);
-  const [currProdDiscount, setCurrProdDiscount] = useState(0);
-  const [currProdRating, setCurrProdRating] = useState(0);
-  const [currProdNumReview, setCurrProdNumReview] = useState(0);
-  const [currProdFollowers, setCurrProdFollowers] = useState(0);
-  const [currProdId, setCurrProdId] = useState('');
+
   const [loading, setLoading] = useState(false);
 
-  const [productViewerIndex, setProductViewerIndex] = useState(null);
   const handleDeleteProduct = (productId) => {
     setLoading(true);
     apiAuth.delete(ElectronicEndpoint.deleteElectronic(productId)).then(res => {
@@ -134,42 +101,17 @@ const Products = () => {
       setLoading(false);
     });
   }
-
-  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
-  const handleOpenUpdateDialog = (index) => {
-    setOpenUpdateDialog(true);
-    setCurrProdName(products[index].name);
-    setCurrProdImg(products[index].electronicImgs);
-    setCurrProdAvailable(products[index].available);
-    setCurrProdMainCategory(products[index].mainCategory);
-    setCurrProdCategories(products[index].categories);
-    setCurrProdPrice(products[index].price);
-    setCurrProdQuantitySold(products[index].quantitySold);
-    setCurrProdBrandName(products[index].brandName);
-    setCurrProdPublishedDate(products[index].publishDate);
-    setCurrProdDescription(products[index].description);
-    // setCurrProdSpecifications(products[index].specifications);
-    setCurrProdDiscount(products[index].discount);
-    setCurrProdRating(products[index].rating);
-    setCurrProdNumReview(products[index].numReview);
-    setCurrProdFollowers(products[index].followers);
-    setCurrProdId(products[index]._id)
-    console.log('Product details:', products[index]);
-  }
-  const handleCloseUpdateDialog = () => {
-    setOpenUpdateDialog(false);
-  };
-
   const [keyword, setKeyword] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const handleSearch = (page) => {
+    setLoading(true)
     setCurrentPage(page);
     if (keyword === '') {
-      setIsSearching(false);
+      setLoading(false)
       fetchData(1);
       return;
     }
-    setIsSearching(true);
+    setLoading(true)
     console.log('Search:', keyword);
     api.get(`/user/displayData/search/electronic?keyword=${keyword}&sortBy=publishDate&sortOrder=desc&page=${page}&limit=10`).then(res => {
       console.log('Search result:', res.data);
@@ -177,7 +119,7 @@ const Products = () => {
       setTotalPage(res.data.totalPages);
     }).catch(err => {
       console.error('Error fetching products:', err);
-    })
+    }).finally(() => setLoading(false))
   }
   const [totalPage, setTotalPage] = useState(1);
   const [nextPage, setNextPage] = useState(2);
@@ -189,16 +131,30 @@ const Products = () => {
     else handleSearch(value);
   }
   const fetchData = (page) => {
+    setLoading(true)
     apiAuth.get(`/admin/electronic?page=${page}&limit=10`).then(res => {
       setProducts(res.data.electronics);
       setTotalPage(res.data.pagination.totalPages);
       setNextPage(res.data.pagination.nextPage);
-    })
+    }).catch(err => console.log(err)).finally(() => setLoading(false))
   }
 
   useEffect(() => {
     fetchData(1);
   }, [])
+
+  const handleSubmit = () => {
+
+  }
+
+  const handleCoverChange = () => {
+
+  }
+
+  const handleInputChange = () => {
+
+  }
+
   return (
     <>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg my-3">
@@ -223,7 +179,7 @@ const Products = () => {
         <div className='flex justify-start p-5'>
           <Pagination count={totalPage} page={currentPage} onChange={handleChangePage} variant="outlined" />
         </div>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+        {/* <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs text-gray-700 dark:text-white dark:bg-gray-800 uppercase bg-gray-50">
             <tr>
               <th scope="col" className="px-6 py-3 border">
@@ -272,11 +228,11 @@ const Products = () => {
                     }}>
                       {product.name}
                     </td>
-                    <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)] grid grid-cols-2 gap-2">
+                    <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)] grid grid-cols-4 gap-2 !w-[500px]">
                       {product.electronicImgs.map((ig, index) => {
                         return <>
                           <a href={ig.url} className='underline cursor-pointer' target='_blank' key={index}>
-                            <img src={ig.url} alt="" className='w-[50px] h-[50px] object-cover' />
+                            <img src={ig.url} alt="" className='w-[70px] h-[70px] object-cover' />
                           </a>
                           <br />
                         </>
@@ -288,9 +244,9 @@ const Products = () => {
                     <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)]">
                       {product.mainCategory}
                     </td>
-                    <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)]">
+                    <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)] flex flex-col !w-[500px]">
                       {product.categories.map(cate => {
-                        return <Tag text={cate} />
+                        return <p>{cate}</p>
                       })}
                     </td>
                     <td className="px-6 py-4 border-l border-[rgba(0,0,0,0.2)]">
@@ -313,7 +269,72 @@ const Products = () => {
               ))
             }
           </tbody>
-        </table>
+        </table> */}
+        <div className="border border-gray-200 rounded-lg overflow-hidden">
+          <div className="overflow-y-auto max-h-[400px]">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50 sticky top-0">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categories</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity sold</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand Name</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {
+                  products.map((product) => (
+                    <tr key={product._id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {product.name.slice(0, 40)}{product.name.length > 40 && "..."}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        {product.available}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        {product.categories.map(cate => {
+                          return <p>{cate}</p>
+                        })}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        {product.quantitySold}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        {product.brandName}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        <div className="flex space-x-3">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              navigate(`/update`, {
+                                state: {
+                                  id: product._id,
+                                }
+                              })
+                            }}
+                            className="text-teal-600 hover:text-teal-800 cursor-pointer"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteProduct(product._id)}
+                            className="text-red-600 hover:text-red-800 cursor-pointer"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div >
       {loading && <LoadingScreen />}
     </>
