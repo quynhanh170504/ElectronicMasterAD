@@ -246,7 +246,7 @@ const ProductUpdate = () => {
     formData.append('categories', JSON.stringify(productCategories));
     formData.append('mainCategory', productMainCategory);
     formData.append('specifications', JSON.stringify(productSpecifications));
-    formData.append('electronicImgs', JSON.stringify(productImgs))
+    // formData.append('electronicImgs', JSON.stringify(productImgs))
     console.log("check all data: ", {
       name: productName,
       available: productAvailable,
